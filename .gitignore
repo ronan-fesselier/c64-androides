@@ -1,0 +1,7 @@
+/build/
+/TMP/
+*.o
+*.prg
+*.d64
+*.map
+*.lst
