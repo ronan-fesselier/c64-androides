@@ -1,6 +1,25 @@
     ;---------------------------------------------------------------------------
-    ; engine.asm: minimal boot stub (clear screen, print a title string).
+    ; engine.asm: boot stub, VIC-II setup, main entry points.
     ;---------------------------------------------------------------------------
+
+    .include "vic_colors.inc"
+
+    .import charset_data
+    .import clear_screen
+    .import draw_map
+    .importzp src_ptr
+    .import level00_map
+    .import level01_map
+    .import level02_map
+    .import level03_map
+    .import level04_map
+    .import level05_map
+    .import level06_map
+    .import level07_map
+    .import level08_map
+    .import level09_map
+    .import current_level_index
+    .export start
 
     ; Load address for PRG ($0801 = start of BASIC)
     .segment "LOADADDR"
@@ -13,67 +32,49 @@
     .byte "2061"
     .byte $00, $00, $00
 
-    BORDER_COLOR = $D020      ; VIC-II border color register
-    BG_COLOR = $D021          ; VIC-II background color register
+    BORDER_COLOR = $D020
+    BG_COLOR     = $D021
+    VIC_MEMPTR   = $D018      ; screen memory/charset pointer register
 
-    COLOR_BLACK = $00
-    COLOR_WHITE = $01
+    ;---------------------------------------------------------------------------
+    ; init: VIC-II setup
+    ;---------------------------------------------------------------------------
 
-    SCREEN_RAM = $0400        ; 1000 bytes: $0400-$07E7
-    COLOR_RAM = $D800         ; 1000 bytes: $D800-$DBE7, mirrors screen layout
+init:
+    SEI                       ; disable interrupts while remapping VIC memory
 
-    CH_SPACE = $20            ; screen code for a blank space (ROM charset)
-
-start:
     LDA #COLOR_BLACK
     STA BORDER_COLOR
     STA BG_COLOR
 
-clear_screen:
-    LDA #CH_SPACE
-    LDX #0
+    ; D018 bits 7-4 = screen addr/1024 ($0400->1), bits 3-1 = charset addr/2048 ($3800->7)
+    LDA #%00011110
+    STA VIC_MEMPTR
 
-clear_loop:
-    STA SCREEN_RAM, X
-    STA SCREEN_RAM + $100, X
-    STA SCREEN_RAM + $200, X
-    STA SCREEN_RAM + $2E8, X
-    LDA #COLOR_WHITE
-    STA COLOR_RAM, X
-    STA COLOR_RAM + $100, X
-    STA COLOR_RAM + $200, X
-    STA COLOR_RAM + $2E8, X
-    LDA #CH_SPACE
-    INX
-    BNE clear_loop
+    CLI
 
-    JSR print_title
+    ;---------------------------------------------------------------------------
+    ; start: main game entry point (reached once "1" is chosen at the menu).
+    ;---------------------------------------------------------------------------
+
+start:
+    JSR clear_screen
+
+    LDA #0
+    STA current_level_index
+    TAX
+    LDA level_map_lo, X
+    STA src_ptr
+    LDA level_map_hi, X
+    STA src_ptr + 1
+    JSR draw_map
 
 halt:
     JMP *
 
-    ;---------------------------------------------------------------------------
-    ; print_title : blit title_text (already screen codes) to row 12.
-    ;---------------------------------------------------------------------------
-
-    TITLE_ROW = 12
-    TITLE_COL = 13
-
-print_title:
-    LDX #0
-print_title_loop:
-    LDA title_text, X
-    BEQ print_title_done
-    STA SCREEN_RAM + TITLE_ROW * 40 + TITLE_COL, X
-    INX
-    BNE print_title_loop
-print_title_done:
-    RTS
-
-    ; screen codes: digits = $30-$39, space = $20,
-    ; uppercase A-Z = $01-$1A in the default ROM charset.
-title_text:
-    .byte $03, $36, $34                               ; C64
-    .byte $20                                         ; space
-    .byte $01, $0E, $04, $12, $0F, $09, $04, $05, $13 ; ANDROIDES
-    .byte $00                                         ; terminator
+level_map_lo:
+    .byte <level00_map, <level01_map, <level02_map, <level03_map, <level04_map
+    .byte <level05_map, <level06_map, <level07_map, <level08_map, <level09_map
+level_map_hi:
+    .byte >level00_map, >level01_map, >level02_map, >level03_map, >level04_map
+    .byte >level05_map, >level06_map, >level07_map, >level08_map, >level09_map
