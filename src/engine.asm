@@ -5,6 +5,7 @@
     .include "vic_colors.inc"
 
     .import charset_data
+    .import menu_screen
     .import clear_screen
     .import draw_map
     .importzp src_ptr
@@ -37,7 +38,7 @@
     VIC_MEMPTR   = $D018      ; screen memory/charset pointer register
 
     ;---------------------------------------------------------------------------
-    ; init: VIC-II setup
+    ; init: VIC-II setup, then enter the boot menu.
     ;---------------------------------------------------------------------------
 
 init:
@@ -53,8 +54,10 @@ init:
 
     CLI
 
+    JMP menu_screen
+
     ;---------------------------------------------------------------------------
-    ; start: main game entry point (reached once "1" is chosen at the menu).
+    ; start: main game entry point.
     ;---------------------------------------------------------------------------
 
 start:
