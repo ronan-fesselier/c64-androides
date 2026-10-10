@@ -2,6 +2,7 @@
     ; engine.asm: boot stub, VIC-II setup, main entry points.
     ;---------------------------------------------------------------------------
 
+    .include "c64_memory.inc"
     .include "vic_colors.inc"
 
     .import charset_data
@@ -20,6 +21,7 @@
     .import level08_map
     .import level09_map
     .import current_level_index
+    .import title_screen
     .export start
 
     ; Load address for PRG ($0801 = start of BASIC)
@@ -36,6 +38,9 @@
     BORDER_COLOR = $D020
     BG_COLOR     = $D021
     VIC_MEMPTR   = $D018      ; screen memory/charset pointer register
+
+    PETSCII_1 = $31
+    PETSCII_2 = $32
 
     ;---------------------------------------------------------------------------
     ; init: VIC-II setup, then enter the boot menu.
@@ -61,6 +66,37 @@ init:
     ;---------------------------------------------------------------------------
 
 start:
+    JSR title_screen
+    JSR wait_players_key
+    STA num_players
+    JMP start_level
+
+wait_players_key:
+wait_players_key_loop:
+    JSR GETIN
+    BEQ wait_players_key_loop
+    CMP #PETSCII_1
+    BEQ wait_players_key_one
+    CMP #PETSCII_2
+    BEQ wait_players_key_two
+    JMP wait_players_key_loop
+wait_players_key_one:
+    LDA #1
+    RTS
+wait_players_key_two:
+    LDA #2
+    RTS
+
+num_players: .byte 0
+
+halt:
+    JMP *
+
+    ;---------------------------------------------------------------------------
+    ; start_level: draw the level map.
+    ;---------------------------------------------------------------------------
+
+start_level:
     JSR clear_screen
 
     LDA #0
@@ -71,10 +107,7 @@ start:
     LDA level_map_hi, X
     STA src_ptr + 1
     JSR draw_map
-
-halt:
-    JMP *
-
+    JMP halt
 level_map_lo:
     .byte <level00_map, <level01_map, <level02_map, <level03_map, <level04_map
     .byte <level05_map, <level06_map, <level07_map, <level08_map, <level09_map
