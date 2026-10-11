@@ -25,6 +25,28 @@
     .export level08_crates
     .export level09_crates
 
+    .export level00_hero
+    .export level01_hero
+    .export level02_hero
+    .export level03_hero
+    .export level04_hero
+    .export level05_hero
+    .export level06_hero
+    .export level07_hero
+    .export level08_hero
+    .export level09_hero
+
+    .export level00_pursuers
+    .export level01_pursuers
+    .export level02_pursuers
+    .export level03_pursuers
+    .export level04_pursuers
+    .export level05_pursuers
+    .export level06_pursuers
+    .export level07_pursuers
+    .export level08_pursuers
+    .export level09_pursuers
+
     .segment "CODE"
 
 level00_map:
@@ -61,6 +83,13 @@ level00_crates:
     .byte 30, 21
     .byte 255
 
+level00_pursuers:
+    .byte 24, 11
+    .byte 255
+
+level00_hero:
+    .byte 19, 21
+
 level01_map:
     .byte 1, 1, 2, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     .byte 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0
@@ -96,6 +125,13 @@ level01_crates:
     .byte 14, 20
     .byte 22, 20
     .byte 255
+
+level01_pursuers:
+    .byte 17, 16
+    .byte 255
+
+level01_hero:
+    .byte 19, 2
 
 level02_map:
     .byte 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
@@ -134,6 +170,15 @@ level02_crates:
     .byte 35, 20
     .byte 255
 
+level02_pursuers:
+    .byte 6, 9
+    .byte 11, 12
+    .byte 24, 20
+    .byte 255
+
+level02_hero:
+    .byte 8, 20
+
 level03_map:
     .byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     .byte 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -170,6 +215,15 @@ level03_crates:
     .byte 29, 18
     .byte 24, 20
     .byte 255
+
+level03_pursuers:
+    .byte 25, 1
+    .byte 14, 12
+    .byte 22, 20
+    .byte 255
+
+level03_hero:
+    .byte 6, 20
 
 level04_map:
     .byte 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
@@ -208,6 +262,16 @@ level04_crates:
     .byte 16, 20
     .byte 255
 
+level04_pursuers:
+    .byte 5, 1
+    .byte 8, 4
+    .byte 17, 10
+    .byte 17, 16
+    .byte 255
+
+level04_hero:
+    .byte 4, 20
+
 level05_map:
     .byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0
     .byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0
@@ -242,6 +306,15 @@ level05_crates:
     .byte 24, 14
     .byte 38, 20
     .byte 255
+
+level05_pursuers:
+    .byte 17, 1
+    .byte 36, 1
+    .byte 28, 20
+    .byte 255
+
+level05_hero:
+    .byte 4, 20
 
 level06_map:
     .byte 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
@@ -278,6 +351,15 @@ level06_crates:
     .byte 21, 20
     .byte 33, 20
     .byte 255
+
+level06_pursuers:
+    .byte 3, 10
+    .byte 31, 10
+    .byte 15, 18
+    .byte 255
+
+level06_hero:
+    .byte 4, 20
 
 level07_map:
     .byte 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
@@ -316,6 +398,18 @@ level07_crates:
     .byte 36, 20
     .byte 255
 
+level07_pursuers:
+    .byte 7, 6
+    .byte 19, 8
+    .byte 36, 11
+    .byte 4, 17
+    .byte 21, 17
+    .byte 37, 20
+    .byte 255
+
+level07_hero:
+    .byte 18, 20
+
 level08_map:
     .byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     .byte 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2
@@ -353,6 +447,14 @@ level08_crates:
     .byte 2, 20
     .byte 255
 
+level08_pursuers:
+    .byte 14, 3
+    .byte 2, 17
+    .byte 255
+
+level08_hero:
+    .byte 17, 20
+
 level09_map:
     .byte 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2
     .byte 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2
@@ -389,3 +491,15 @@ level09_crates:
     .byte 31, 19
     .byte 11, 21
     .byte 255
+
+level09_pursuers:
+    .byte 6, 1
+    .byte 21, 1
+    .byte 15, 5
+    .byte 15, 9
+    .byte 15, 15
+    .byte 18, 21
+    .byte 255
+
+level09_hero:
+    .byte 33, 19

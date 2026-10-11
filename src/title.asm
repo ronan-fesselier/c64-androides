@@ -7,9 +7,12 @@
     .import clear_screen
     .import draw_map
     .import draw_glyph
+    .import position_sprite
     .importzp src_ptr
     .importzp dt_color
     .importzp str_ptr
+    .importzp entity_ptr
+    .importzp sprite_index
     .export title_logo
     .export title_screen
 
@@ -77,7 +80,62 @@ title_screen:
     LDY #24
     JSR draw_glyph
 
+    JSR draw_title_pursuers
+
     RTS
+
+    ;---------------------------------------------------------------------------
+    ; draw_title_pursuers: the 8 decorative entities around the logo, sprites 0-7.
+    ;---------------------------------------------------------------------------
+
+VIC_SPRITE_COLOR_BASE = $D027
+
+draw_title_pursuers:
+    LDX #0
+draw_title_pursuers_loop:
+    CPX #8
+    BCS draw_title_pursuers_done
+
+    TXA
+    ASL A                          ; 2 bytes per entry
+    TAY
+    LDA title_pursuer_positions, Y
+    STA title_pursuer_tmp
+    LDA title_pursuer_positions + 1, Y
+    STA title_pursuer_tmp + 1
+
+    STX sprite_index
+    LDA #<title_pursuer_tmp
+    STA entity_ptr
+    LDA #>title_pursuer_tmp
+    STA entity_ptr + 1
+    LDX sprite_index
+    JSR position_sprite
+
+    LDX sprite_index
+    LDA #COLOR_WHITE
+    STA VIC_SPRITE_COLOR_BASE, X
+
+    LDX sprite_index
+    INX
+    JMP draw_title_pursuers_loop
+draw_title_pursuers_done:
+    RTS
+
+title_pursuer_tmp: .byte 0, 0
+
+    ; (col, row) pairs, tile units — from ANDRDF.BIN's title "level" data,
+    ; entities2 table (sprite_id=$02), converted with the confirmed
+    ; row=raw_x/2, col=raw_y formula (see project_entity_coordinate_format).
+title_pursuer_positions:
+    .byte 10, 0
+    .byte 30, 0
+    .byte 0, 6
+    .byte 39, 6
+    .byte 0, 14
+    .byte 39, 14
+    .byte 10, 20
+    .byte 30, 20
 
     ; Strings stored as explicit byte values (ASCII codes)
 title_text_copyright:
