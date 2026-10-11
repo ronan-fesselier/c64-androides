@@ -9,7 +9,9 @@
     .import menu_screen
     .import clear_screen
     .import draw_map
+    .import draw_crates
     .importzp src_ptr
+    .importzp crate_ptr
     .import level00_map
     .import level01_map
     .import level02_map
@@ -20,6 +22,16 @@
     .import level07_map
     .import level08_map
     .import level09_map
+    .import level00_crates
+    .import level01_crates
+    .import level02_crates
+    .import level03_crates
+    .import level04_crates
+    .import level05_crates
+    .import level06_crates
+    .import level07_crates
+    .import level08_crates
+    .import level09_crates
     .import current_level_index
     .import title_screen
     .export start
@@ -107,6 +119,15 @@ start_level:
     LDA level_map_hi, X
     STA src_ptr + 1
     JSR draw_map
+
+    LDA current_level_index
+    TAX
+    LDA level_crate_lo, X
+    STA crate_ptr
+    LDA level_crate_hi, X
+    STA crate_ptr + 1
+    JSR draw_crates
+
     JMP halt
 level_map_lo:
     .byte <level00_map, <level01_map, <level02_map, <level03_map, <level04_map
@@ -114,3 +135,9 @@ level_map_lo:
 level_map_hi:
     .byte >level00_map, >level01_map, >level02_map, >level03_map, >level04_map
     .byte >level05_map, >level06_map, >level07_map, >level08_map, >level09_map
+level_crate_lo:
+    .byte <level00_crates, <level01_crates, <level02_crates, <level03_crates, <level04_crates
+    .byte <level05_crates, <level06_crates, <level07_crates, <level08_crates, <level09_crates
+level_crate_hi:
+    .byte >level00_crates, >level01_crates, >level02_crates, >level03_crates, >level04_crates
+    .byte >level05_crates, >level06_crates, >level07_crates, >level08_crates, >level09_crates

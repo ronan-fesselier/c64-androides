@@ -8,7 +8,9 @@
 
     .export clear_screen
     .export draw_map
+    .export draw_crates
     .export src_ptr
+    .export crate_ptr
     .export current_level_index
 
     .segment "CODE"
@@ -16,9 +18,12 @@
     MAP_WIDTH = 40
     MAP_HEIGHT = 22
 
-    src_ptr = $07             ; 2 bytes ($07/$08)
-    dst_ptr = $09             ; 2 bytes ($09/$0A)
-    col_ptr = $05             ; 2 bytes ($05/$06)
+    src_ptr   = $07            ; 2 bytes ($07/$08)
+    dst_ptr   = $09            ; 2 bytes ($09/$0A)
+    col_ptr   = $05            ; 2 bytes ($05/$06)
+    crate_ptr = $0B            ; 2 bytes ($0B/$0C)
+    crate_scr = $0D            ; 2 bytes ($0D/$0E)
+    crate_clr = $0F            ; 2 bytes ($0F/$10)
 
     ;---------------------------------------------------------------------------
     ; clear_screen: fill SCREEN_RAM with CH_EMPTY and COLOR_RAM with COLOR_BLACK.
@@ -97,6 +102,93 @@ draw_map_skip_inc:
     JMP draw_map_loop
 draw_map_done:
     RTS
+
+    ;---------------------------------------------------------------------------
+    ; draw_crates: plot each crate (col, row pair) in the level's crate list
+    ; (crate_ptr, set by the caller) as a CH_CRATE glyph,
+    ; until the CRATE_LIST_END sentinel byte reached.
+    ;---------------------------------------------------------------------------
+
+CRATE_LIST_END = 255
+
+draw_crates:
+    LDY #0
+draw_crates_loop:
+    LDA (crate_ptr), Y
+    CMP #CRATE_LIST_END
+    BNE draw_crates_body
+    RTS
+draw_crates_body:
+    STA crate_col
+    INY
+    LDA (crate_ptr), Y
+    STA crate_row
+    INY
+    STY crate_table_pos
+
+    ; offset = row * 40 + col = row*32 + row*8 + col (16-bit, since row*40 can exceed 255)
+    LDA #0
+    STA crate_off + 1
+    LDA crate_row
+    STA crate_off
+    ASL crate_off
+    ROL crate_off + 1
+    ASL crate_off
+    ROL crate_off + 1
+    ASL crate_off
+    ROL crate_off + 1          ; crate_off = row * 8
+    LDA crate_off
+    STA crate_tmp
+    LDA crate_off + 1
+    STA crate_tmp + 1
+    ASL crate_off
+    ROL crate_off + 1
+    ASL crate_off
+    ROL crate_off + 1          ; crate_off = row * 32
+    CLC
+    LDA crate_off
+    ADC crate_tmp
+    STA crate_off
+    LDA crate_off + 1
+    ADC crate_tmp + 1
+    STA crate_off + 1          ; crate_off = row * 40
+    CLC
+    LDA crate_off
+    ADC crate_col
+    STA crate_off
+    LDA crate_off + 1
+    ADC #0
+    STA crate_off + 1
+
+    LDA #<SCREEN_RAM
+    CLC
+    ADC crate_off
+    STA crate_scr
+    LDA #>SCREEN_RAM
+    ADC crate_off + 1
+    STA crate_scr + 1
+    LDA #<COLOR_RAM
+    CLC
+    ADC crate_off
+    STA crate_clr
+    LDA #>COLOR_RAM
+    ADC crate_off + 1
+    STA crate_clr + 1
+
+    LDY #0
+    LDA #CH_CRATE
+    STA (crate_scr), Y
+    LDA #COLOR_WHITE
+    STA (crate_clr), Y
+
+    LDY crate_table_pos
+    JMP draw_crates_loop
+
+crate_col:        .byte 0
+crate_row:        .byte 0
+crate_table_pos:  .byte 0
+crate_off:        .word 0
+crate_tmp:        .word 0
 
 current_level_index: .byte 0
 copied_hi:           .byte 0
