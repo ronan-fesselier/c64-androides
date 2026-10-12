@@ -142,8 +142,25 @@ wait_players_key_two:
 
 num_players: .byte 0
 
+    ;---------------------------------------------------------------------------
+    ; halt: idle loop after a level is drawn.
+    ; Debug-only: N advances to the next level.
+    ;---------------------------------------------------------------------------
+
+PETSCII_N = $4E
+
 halt:
-    JMP *
+    JSR GETIN
+    CMP #PETSCII_N
+    BNE halt
+
+    INC current_level_index
+    LDA current_level_index
+    CMP #10
+    BNE start_level
+    LDA #0
+    STA current_level_index
+    JMP start_level
 
     ;---------------------------------------------------------------------------
     ; start_level: draw the level map.
@@ -155,9 +172,7 @@ start_level:
     LDA #0
     STA VIC_SPRITE_ENABLE      ; clear sprites
 
-    LDA #0
-    STA current_level_index
-    TAX
+    LDX current_level_index
     LDA level_map_lo, X
     STA src_ptr
     LDA level_map_hi, X
